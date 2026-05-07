@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Time Tracker Lite - 一个 Toggl 风格的轻量计时工具 MVP" />
+  <title>Time Tracker Lite</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">MVP · Toggl 风格</p>
+        <h1>Time Tracker Lite</h1>
+        <p class="subtitle">本地保存的轻量计时工具：开始、暂停、停止、项目、标签、导出。</p>
+      </div>
+      <div class="top-actions">
+        <button class="btn ghost" id="exportCsvBtn" type="button">导出 CSV</button>
+        <button class="btn ghost danger" id="clearDataBtn" type="button">清空数据</button>
+      </div>
+    </header>
+
+    <main class="grid-layout">
+      <section class="panel timer-panel">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">当前计时</p>
+            <h2>记录正在做什么</h2>
+          </div>
+          <span class="status-pill" id="timerStatus">未开始</span>
+        </div>
+
+        <div class="timer-display" id="elapsedDisplay">00:00:00</div>
+        <p class="timer-meta" id="timerMeta">还没有开始任何计时。</p>
+
+        <form id="timerForm" class="form-grid">
+          <label class="field field-wide">
+            <span>任务名称</span>
+            <input id="descriptionInput" type="text" placeholder="例如：修复支付页样式" autocomplete="off" />
+          </label>
+
+          <label class="field">
+            <span>项目</span>
+            <select id="projectSelect"></select>
+          </label>
+
+          <label class="field">
+            <span>新增项目</span>
+            <div class="inline-row">
+              <input id="newProjectInput" type="text" placeholder="例如：产品设计" autocomplete="off" />
+              <button class="btn secondary" id="addProjectBtn" type="button">添加</button>
+            </div>
+          </label>
+
+          <label class="field field-wide">
+            <span>标签（逗号分隔）</span>
+            <input id="tagsInput" type="text" placeholder="例如：前端, 紧急, 会议" autocomplete="off" />
+          </label>
+
+          <label class="checkbox-row field-wide">
+            <input id="billableInput" type="checkbox" />
+            <span>计费工时</span>
+          </label>
+
+          <div class="button-row field-wide">
+            <button class="btn primary" id="startBtn" type="submit">开始计时</button>
+            <button class="btn secondary" id="pauseBtn" type="button" disabled>暂停</button>
+            <button class="btn secondary" id="resumeBtn" type="button" disabled>继续</button>
+            <button class="btn danger" id="stopBtn" type="button" disabled>停止并保存</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="side-column">
+        <section class="panel stats-panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">概览</p>
+              <h2>关键指标</h2>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <article class="stat-card">
+              <span>今日时长</span>
+              <strong id="todayTotal">00:00:00</strong>
+            </article>
+            <article class="stat-card">
+              <span>本周时长</span>
+              <strong id="weekTotal">00:00:00</strong>
+            </article>
+            <article class="stat-card">
+              <span>进行中</span>
+              <strong id="runningCount">0</strong>
+            </article>
+            <article class="stat-card">
+              <span>条目总数</span>
+              <strong id="entryCount">0</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel projects-panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">项目</p>
+              <h2>常用项目</h2>
+            </div>
+          </div>
+          <div id="projectChips" class="chip-wrap"></div>
+        </section>
+      </aside>
+
+      <section class="panel entries-panel">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">记录</p>
+            <h2>时间条目</h2>
+          </div>
+          <div class="filter-row">
+            <input id="searchInput" type="search" placeholder="搜索任务、项目、标签" />
+            <select id="filterProjectSelect"></select>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>任务</th>
+                <th>项目</th>
+                <th>标签</th>
+                <th>开始 / 结束</th>
+                <th>时长</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="entriesBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <template id="emptyTemplate">
+    <tr>
+      <td colspan="6">
+        <div class="empty-state">
+          <h3>还没有记录</h3>
+          <p>先填一个任务名称，点“开始计时”就能生成第一条记录。</p>
+        </div>
+      </td>
+    </tr>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
