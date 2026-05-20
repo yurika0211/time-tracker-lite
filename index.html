@@ -107,6 +107,10 @@
             </div>
           </div>
           <div id="projectChips" class="chip-wrap"></div>
+          <details class="project-admin" id="projectAdmin">
+            <summary>项目管理</summary>
+            <div id="projectAdminList" class="project-admin-list"></div>
+          </details>
         </section>
       </aside>
 
@@ -119,7 +123,52 @@
           <div class="filter-row">
             <input id="searchInput" type="search" placeholder="搜索任务、项目、标签" />
             <select id="filterProjectSelect"></select>
+            <button class="btn secondary" id="addManualEntryBtn" type="button">＋ 手动录入</button>
           </div>
+        </div>
+
+        <div class="manual-entry-panel" id="manualEntryPanel" hidden>
+          <form id="manualEntryForm" class="form-grid">
+            <label class="field field-wide">
+              <span>任务名称</span>
+              <input id="manualDescription" type="text" placeholder="例如：设计评审" autocomplete="off" />
+            </label>
+
+            <label class="field">
+              <span>项目</span>
+              <select id="manualProject"></select>
+            </label>
+
+            <label class="field">
+              <span>标签</span>
+              <input id="manualTags" type="text" placeholder="逗号分隔" autocomplete="off" />
+            </label>
+
+            <label class="field">
+              <span>计费</span>
+              <label class="checkbox-row" style="margin-top:8px">
+                <input id="manualBillable" type="checkbox" />
+                <span>计费工时</span>
+              </label>
+            </label>
+
+            <label class="field">
+              <span>开始时间</span>
+              <input id="manualStartTime" type="datetime-local" />
+            </label>
+
+            <label class="field">
+              <span>结束时间</span>
+              <input id="manualEndTime" type="datetime-local" />
+            </label>
+
+            <div class="field field-wide manual-duration-preview" id="manualDurationPreview">⏱ 时长：—</div>
+
+            <div class="button-row field-wide">
+              <button class="btn primary" type="submit">添加记录</button>
+              <button class="btn ghost" id="manualEntryCancelBtn" type="button">取消</button>
+            </div>
+          </form>
         </div>
 
         <div class="table-wrap">
@@ -141,12 +190,63 @@
     </main>
   </div>
 
+  <dialog class="edit-dialog" id="editDialog">
+    <form id="editForm" class="edit-form">
+      <div class="edit-header">
+        <h3>编辑时间记录</h3>
+        <button type="button" class="btn ghost" id="editCloseBtn" aria-label="关闭">&times;</button>
+      </div>
+
+      <p class="edit-error" id="editError" hidden></p>
+
+      <label class="field field-wide">
+        <span>任务名称</span>
+        <input id="editDescription" type="text" autocomplete="off" />
+      </label>
+
+      <label class="field">
+        <span>项目</span>
+        <select id="editProject"></select>
+      </label>
+
+      <label class="field">
+        <span>标签</span>
+        <input id="editTags" type="text" placeholder="逗号分隔" autocomplete="off" />
+      </label>
+
+      <label class="field">
+        <span>计费</span>
+        <label class="checkbox-row" style="margin-top:8px">
+          <input id="editBillable" type="checkbox" />
+          <span>计费工时</span>
+        </label>
+      </label>
+
+      <label class="field">
+        <span>开始时间</span>
+        <input id="editStartedAt" type="datetime-local" />
+      </label>
+
+      <label class="field">
+        <span>结束时间</span>
+        <input id="editEndedAt" type="datetime-local" />
+      </label>
+
+      <div class="field field-wide edit-duration-preview" id="editDurationPreview">⏱ 时长：—</div>
+
+      <div class="button-row field-wide">
+        <button class="btn primary" type="submit">保存修改</button>
+        <button class="btn ghost" id="editCancelBtn" type="button">取消</button>
+      </div>
+    </form>
+  </dialog>
+
   <template id="emptyTemplate">
     <tr>
       <td colspan="6">
         <div class="empty-state">
           <h3>还没有记录</h3>
-          <p>先填一个任务名称，点“开始计时”就能生成第一条记录。</p>
+          <p>先填一个任务名称，点"开始计时"就能生成第一条记录。</p>
         </div>
       </td>
     </tr>
@@ -155,4 +255,3 @@
   <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
-

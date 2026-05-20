@@ -1,10 +1,16 @@
-import type { ActiveTimer, AppState, Filters, TimeEntry } from '../types';
+import type { ActiveTimer, AppState, Filters, ProjectMeta, TimeEntry } from '../types';
 
 export const DEFAULT_PROJECTS: readonly string[] = ['Inbox', '设计', '开发', '会议', '学习'];
+
+export const PROJECT_COLORS: readonly string[] = [
+  '#7c3aed', '#2563eb', '#059669', '#d97706', '#dc2626',
+  '#0891b2', '#4f46e5', '#65a30d', '#db2777', '#0d9488'
+];
 
 export function makeDefaultState(): AppState {
   return {
     projects: [...DEFAULT_PROJECTS],
+    projectMeta: {},
     entries: [],
     active: null,
     filters: { query: '', project: 'all' }
@@ -17,7 +23,32 @@ export function normalizeState(raw: unknown): AppState {
   const entries = normalizeEntries(source.entries);
   const active = normalizeActive(source.active);
   const projects = normalizeProjects(source.projects, entries, active, filters.project);
-  return { projects, entries, active, filters };
+  const projectMeta = normalizeProjectMeta(source.projectMeta, projects);
+  return { projects, projectMeta, entries, active, filters };
+}
+
+export function normalizeProjectMeta(
+  raw: unknown,
+  projectNames: string[]
+): Record<string, ProjectMeta> {
+  const meta: Record<string, ProjectMeta> = {};
+  if (isRecord(raw)) {
+    for (const name of Object.keys(raw)) {
+      const entry = raw[name];
+      if (isRecord(entry)) {
+        meta[name] = {
+          archived: Boolean(entry.archived),
+          color: typeof entry.color === 'string' ? entry.color : undefined,
+          defaultBillable: Boolean(entry.defaultBillable)
+        };
+      }
+    }
+  }
+  // Ensure every known project has at least an entry
+  projectNames.forEach(name => {
+    if (!meta[name]) meta[name] = {};
+  });
+  return meta;
 }
 
 export function normalizeProjects(
